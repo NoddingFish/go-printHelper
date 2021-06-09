@@ -6,27 +6,21 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
-	"net/url"
-	"regexp"
 	"sync"
 	"time"
 )
 
 type Connetion struct {
-	con *websocket.Conn
+	con   *websocket.Conn
 	mutex sync.Mutex
 }
 
-//定义命令行参数
-//var addr = flag.String("a", "test.huijiedan.cn/websocket?type=print:80", "")
-//var clientUuid = flag.String("u", "", "uuid")
-//var c = flag.Int("c", 5, "number of connections")
+type ConnectDate struct {
+	Nick string
+	SubNick string
+}
 
-
-func webSocketConn(wg sync.WaitGroup, msg []byte) {
-	u := url.URL{Scheme: "wss", Host: "test.huijiedan.cn/websocket?type=print"}
-	fmt.Println("111111111111")
-	fmt.Println(u.String())
+func webSocketConn(wg *sync.WaitGroup, msg []byte) {
 	var dialer *websocket.Dialer
 
 	conn, _, err := dialer.Dial("wss://test.huijiedan.cn/websocket?type=print", nil)
@@ -37,24 +31,16 @@ func webSocketConn(wg sync.WaitGroup, msg []byte) {
 		return
 	}
 
-
 	werr := conn.WriteMessage(websocket.TextMessage, msg)
 
-	//fmt.Printf("发送信息：%s\n",string(msg))
-	//2. 创建一个正则表达式对象
-	regx, _:= regexp.Compile("\\w{8}(-\\w{4}){3}-\\w{12}")
-	//3. 利用正则表达式对象, 匹配指定的字符串
-	res := regx.FindString(string(msg))
-	//fmt.Printf("匹配的clientId：%s\n",res)
 	msg1 := make(map[string]interface{})
-	msg2 := make(map[string]interface{})
-	msg2["success"] = true
+	msg1["type"] = "login"
+	msg1["name"] = "wangweilon"
+	msg1["sub_name"] = "wangweilon:徐然"
 
-	msg1["clientId"] = res
-	msg1["messageType"] = "ACK"
-	msg1["messageId"] = "5e7d6e31e4b079c2b22876d8"
-	msg1["data"] = msg2
 	aMsg, _ := json.Marshal(msg1)
+
+	fmt.Printf("测试 %s\n", aMsg)
 
 	if werr != nil {
 		fmt.Println(werr)
@@ -68,14 +54,13 @@ func webSocketConn(wg sync.WaitGroup, msg []byte) {
 	//开启多线程
 	go connect.timeWriter(ticker, conn)
 
-
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
-			fmt.Println("read:", err)
+			fmt.Printf("read err:%v \n", err)
 			return
 		}
-		fmt.Println("read:", message)
+		fmt.Printf("read:%s \n", message)
 
 		//互斥锁
 		connect.mutex.Lock()
@@ -88,12 +73,11 @@ func webSocketConn(wg sync.WaitGroup, msg []byte) {
 
 		fmt.Printf("received: %s\n", message)
 	}
-	wg.Done()              // 每次把计数器-1
+	wg.Done() // 每次把计数器-1
 
 }
 
-func (con *Connetion)timeWriter(ticker *time.Ticker, c *websocket.Conn) {
-
+func (con *Connetion) timeWriter(ticker *time.Ticker, c *websocket.Conn) {
 
 	for {
 		<-ticker.C
@@ -112,42 +96,31 @@ func (con *Connetion)timeWriter(ticker *time.Ticker, c *websocket.Conn) {
 	}
 }
 
-
 func NewConnMsg() []byte {
 
 	msg := make(map[string]interface{})
 
-	//fmt.Printf("uuid值:%s\n",uuid1)
-	//id := 123131001
-	//if *clientUuid == "" {
-	//	msg["clientId"] = id
-	//} else {
-	//	msg["clientId"] = *clientUuid
-	//}
 
-
-	msg["messageId"] = "5e7d6e31e4b079c2b22876d8"
-	msg["messageType"] = "LOGIN"
-	msg["targetType"] = "PASSENGER"
+	msg["type"] = "login"
+	msg["name"] = "wangweilon"
+	msg["sub_name"] = "wangweilon:徐然"
 
 	bMsg, _ := json.Marshal(msg)
-	//log.Printf("%s\n", bMsg)
 
 	return bMsg
 }
 
-func run() {
+func WebsocketRun() {
 
-	flag.Parse()         //命令行参数
-	var wg sync.WaitGroup         //申明计数器
+	flag.Parse()           //命令行参数
+	var wg *sync.WaitGroup //申明计数器
 
 	webSocketConn(wg, NewConnMsg())
 
-	wg.Wait()            //阻塞代码的运行，直到计数器地值减为0
+	wg.Wait() //阻塞代码的运行，直到计数器地值减为0
 }
-
 
 func main() {
 	//NewConnMsg()
-	run()
+	WebsocketRun()
 }

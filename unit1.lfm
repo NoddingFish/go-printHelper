@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 642
+  Left = 673
   Height = 344
-  Top = 326
+  Top = 245
   Width = 604
   Caption = '打印'
   ClientHeight = 344
@@ -54,7 +54,7 @@ object Form1: TForm1
       TabOrder = 1
     end
     object Button1: TButton
-      Left = 29
+      Left = 28
       Height = 36
       Top = 184
       Width = 158
