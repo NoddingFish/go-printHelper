@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="D:\Software\Lazarus\fpc\3.2.0\bin\x86_64-win64\fpc.exe" Date="1381338938"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq -FiC:\Users\nlxur\OneDrive\工作\Go\printUi\lib\x86_64-win64 -FuD:\Software\Lazarus\lcl\units\x86_64-win64\win32 -FuD:\Software\Lazarus\lcl\units\x86_64-win64 -FuD:\Software\Lazarus\components\lazutils\lib\x86_64-win64 -FuD:\Software\Lazarus\packager\units\x86_64-win64 -FuC:\Users\nlxur\OneDrive\工作\Go\printUi\ -FUC:\Users\nlxur\OneDrive\工作\Go\printUi\lib\x86_64-win64\ -FEC:\Users\nlxur\OneDrive\工作\Go\printUi\ -oC:\Users\nlxur\OneDrive\工作\Go\printUi\project1.exe -dLCL -dLCLwin32 project1.lpr"/>
+</CONFIG>
