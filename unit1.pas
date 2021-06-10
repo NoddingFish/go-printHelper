@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    LogClear: TButton;
     LogBox: TListBox;
     Nick: TEdit;
     SubNick: TEdit;

@@ -16,9 +16,13 @@ type Connetion struct {
 }
 
 type ConnectDate struct {
-	Nick string
+	Nick    string
 	SubNick string
 }
+
+var f *TForm1
+var Nick string
+var SubNick string
 
 func webSocketConn(wg *sync.WaitGroup, msg []byte) {
 	var dialer *websocket.Dialer
@@ -33,48 +37,88 @@ func webSocketConn(wg *sync.WaitGroup, msg []byte) {
 
 	werr := conn.WriteMessage(websocket.TextMessage, msg)
 
-	msg1 := make(map[string]interface{})
-	msg1["type"] = "login"
-	msg1["name"] = "wangweilon"
-	msg1["sub_name"] = "wangweilon:徐然"
-
-	aMsg, _ := json.Marshal(msg1)
-
-	fmt.Printf("测试 %s\n", aMsg)
-
 	if werr != nil {
 		fmt.Println(werr)
 	}
 	//申明定时器10s，设置心跳时间为10s
-	ticker := time.NewTicker(time.Second * 10)
-
-	connect := &Connetion{
-		con: conn,
-	}
+	//ticker := time.NewTicker(time.Second * 10)
+	//
+	//connect := &Connetion{
+	//	con: conn,
+	//}
 	//开启多线程
-	go connect.timeWriter(ticker, conn)
+	//go connect.timeWriter(ticker, conn)
 
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			fmt.Printf("read err:%v \n", err)
-			return
+	//开启多线程
+	go func() {
+		for {
+			_, message, err := conn.ReadMessage()
+
+			if err != nil {
+				fmt.Printf("read err:%v \n", err)
+				f.LogBox.Items().Add(DateStr() + "：断开链接")
+				//TODO 保持 listBox 滚动条显示最新记录
+				f.LogBox.SetTopIndex(f.LogBox.Count() - 1)
+				
+				_ = conn.Close()
+				return
+			}
+			//str := fmt.Sprintf("%s", message)
+			//f.LogBox.Items().Add(str)
+
+			jsonData := ByteToMap(message)
+			typeD := jsonData["type"]
+
+			switch typeD {
+			case "login":
+				f.LogBox.Items().Add(DateStr() + "：恭喜你，登录成功！")
+				break
+			case "online":
+				onlineData := make(map[string]interface{})
+
+				onlineData["source_client"] = "printHelper"
+				onlineData["type"] = "online_back"
+				onlineData["name"] = Nick
+				onlineData["sub_name"] = SubNick
+				onlineData["status"] = "success"
+
+				onlineMsg, _ := json.Marshal(onlineData)
+
+				werr := conn.WriteMessage(websocket.TextMessage, onlineMsg)
+
+				if werr != nil {
+					fmt.Println(werr)
+				}
+				break
+			}
+
+			fmt.Printf("ReadMessage:%s \n", message)
+
+			fmt.Println(jsonData)
+			fmt.Println(jsonData["type"])
+
+			//TODO 保持 listBox 滚动条显示最新记录
+			f.LogBox.SetTopIndex(f.LogBox.Count() - 1)
 		}
-		fmt.Printf("read:%s \n", message)
+	}()
 
-		//互斥锁
-		connect.mutex.Lock()
-		werr2 := connect.con.WriteMessage(websocket.TextMessage, aMsg)
-		connect.mutex.Unlock()
+}
 
-		if werr2 != nil {
-			fmt.Println(werr2)
-		}
+func DateStr() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
 
-		fmt.Printf("received: %s\n", message)
+func ByteToMap(byteData []byte) map[string]interface{} {
+
+	var tempMap map[string]interface{}
+
+	err := json.Unmarshal(byteData, &tempMap)
+
+	if err != nil {
+		panic(err)
 	}
-	wg.Done() // 每次把计数器-1
 
+	return tempMap
 }
 
 func (con *Connetion) timeWriter(ticker *time.Ticker, c *websocket.Conn) {
@@ -100,27 +144,31 @@ func NewConnMsg() []byte {
 
 	msg := make(map[string]interface{})
 
-
+	msg["source_client"] = "printHelper"
 	msg["type"] = "login"
-	msg["name"] = "wangweilon"
-	msg["sub_name"] = "wangweilon:徐然"
+	msg["name"] = Nick
+	msg["sub_name"] = SubNick
 
 	bMsg, _ := json.Marshal(msg)
 
 	return bMsg
 }
 
-func WebsocketRun() {
+func WebsocketRun(fIn *TForm1, nick string, subNick string) {
+
+	f = fIn
+	Nick = nick
+	SubNick = subNick
 
 	flag.Parse()           //命令行参数
 	var wg *sync.WaitGroup //申明计数器
 
 	webSocketConn(wg, NewConnMsg())
 
-	wg.Wait() //阻塞代码的运行，直到计数器地值减为0
+	//wg.Wait() //阻塞代码的运行，直到计数器地值减为0
 }
 
-func main() {
-	//NewConnMsg()
-	WebsocketRun()
-}
+//func main() {
+//	//NewConnMsg()
+//	WebsocketRun()
+//}
