@@ -28,6 +28,8 @@ func (f *TForm1) OnButton1Click(sender vcl.IObject) {
 		vcl.ShowMessage("子账号必填！")
 		return
 	}
+	f.Button1.SetEnabled(false)
+	f.Button2.SetEnabled(true)
 	f.LogBox.Items().Add(time.Now().Format("2006-01-02 15:04:05") + "：提交数据！")
 	WebsocketRun(f,nick, SubNick)
 }
