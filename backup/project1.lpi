@@ -6,16 +6,20 @@
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="project1"/>
+      <Title Value="打印助手2"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
+        <TextName Value="打印助手"/>
+        <TextDesc Value="用于连接菜鸟打印组件提交打印任务的助手工具。"/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
     <Res2go>
+      <Enabled Value="True"/>
+      <UseOriginalFileName Value="True"/>
       <GoBuildMode Value="exe"/>
     </Res2go>
     <BuildModes Count="1">
