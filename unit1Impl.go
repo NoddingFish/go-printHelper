@@ -9,6 +9,7 @@ import (
 
 //::private::
 type TForm1Fields struct {
+
 }
 
 func (f *TForm1) OnFormCreate(sender vcl.IObject) {
@@ -17,6 +18,9 @@ func (f *TForm1) OnFormCreate(sender vcl.IObject) {
 		//f.Hide()
 		//f.SetWindowState(types.WsMinimized)
 		//*canClose = false
+		//if vcl.Application.MessageBox("消息", "标题", win.MB_OKCANCEL+win.MB_ICONINFORMATION) == types.IdOK {
+		//	vcl.ShowMessage("你点击了“是")
+		//}
 		if vcl.MessageDlg("是否最小化到托盘？", types.MtConfirmation, types.MbYes, types.MbClose) == types.IdYes {
 			f.Hide()
 			*canClose = false
@@ -40,7 +44,6 @@ func SetTrayIcon(f *TForm1) {
 	item2.SetCaption("退出")
 	item2.SetOnClick(func(vcl.IObject) {
 		f.Close()
-
 	})
 	pm.Items().Add(item2)
 	trayicon.SetPopupMenu(pm)
@@ -84,7 +87,7 @@ func (f *TForm1) OnButton1Click(sender vcl.IObject) {
 		return
 	}
 	f.Button1.SetEnabled(false)
-	f.Button2.SetEnabled(true)
+	//f.Button2.SetEnabled(true)
 	f.LogBox.Items().Add(time.Now().Format("2006-01-02 15:04:05") + "：提交数据！")
 	WebsocketRun(f, nick, SubNick)
 }

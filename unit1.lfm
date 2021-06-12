@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 344
   Top = 245
   Width = 604
-  Caption = '打印'
+  Caption = '打印助手'
   ClientHeight = 344
   ClientWidth = 604
   Color = clSilver

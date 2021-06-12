@@ -19,6 +19,12 @@ var SubNick string
 var CNConnect *websocket.Conn
 var WebSocketConnect *websocket.Conn
 
+type PrintData struct {
+	A uint32 `json:"a"`
+	B string `json:"b"`
+	C uint32 `json:"c"`
+}
+
 func CNPrintConnect() *websocket.Conn {
 	//TODO 连接菜鸟打印组件
 	var dialer *websocket.Dialer

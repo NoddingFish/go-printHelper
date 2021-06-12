@@ -9,7 +9,7 @@ import (
 
 func main() {
     vcl.Application.SetScaled(true)
-    vcl.Application.SetTitle("打印助手2")
+    vcl.Application.SetTitle("打印助手")
     vcl.Application.Initialize()
     vcl.Application.SetMainFormOnTaskBar(true)
     vcl.Application.CreateForm(&Form1)
