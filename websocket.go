@@ -17,6 +17,7 @@ type Connect struct {
 var f *TForm1
 var Nick string
 var SubNick string
+var DocumentID string
 var CNConnect *websocket.Conn
 var WebSocketConnect *websocket.Conn
 
@@ -82,9 +83,23 @@ func CNSocketListen() {
 			case "notifyPrintResult": //打印通知(notifyPrintResult)
 				if jsonData["taskStatus"] == "printed" {
 					//打印成功回调
-					documentID := fmt.Sprintf("%v", jsonData["printStatus"][interface{}])
+					arrD := jsonData["printStatus"].([]interface{})
+					arrDStr := fmt.Sprintf("%v", arrD)
+					fmt.Println("arrDStr：" + arrDStr)
+					mapD := arrD[0].(map[string]interface{})
+					mapDStr := fmt.Sprintf("%v", mapD)
+					fmt.Println("mapDStr：" + mapDStr)
+
+					documentID := fmt.Sprintf("%v", mapD["documentID"])
 
 					f.LogBox.Items().Add(DateStr() + "：打印成功，" + documentID)
+
+					DocumentID = documentID
+					//TODO 发送打印回执
+					werr := WebSocketConnect.WriteMessage(websocket.TextMessage, NewConnMsg("print_back"))
+					if werr != nil {
+						fmt.Println(werr)
+					}
 				}
 			}
 
@@ -131,10 +146,10 @@ func webSocketListen(msg []byte) {
 			switch typeD {
 			case "login":
 				f.LogBox.Items().Add(DateStr() + "：恭喜你，登录成功！")
+				f.Button2.SetEnabled(true) // 打开断开连接按钮
 			case "online":
 				onlineMsg := NewConnMsg("online_back")
 				werr := WebSocketConnect.WriteMessage(websocket.TextMessage, onlineMsg)
-
 				if werr != nil {
 					fmt.Println(werr)
 				}
@@ -162,12 +177,6 @@ func webSocketListen(msg []byte) {
 				cerr := CNConnect.WriteMessage(websocket.TextMessage, jsonByte)
 				if cerr != nil {
 					fmt.Println(cerr)
-				}
-
-				//TODO 发送打印回执
-				werr := WebSocketConnect.WriteMessage(websocket.TextMessage, NewConnMsg("print_back"))
-				if werr != nil {
-					fmt.Println(werr)
 				}
 			}
 
@@ -258,10 +267,11 @@ func NewConnMsg(typeStr string) []byte {
 
 	switch typeStr {
 	case "heart", "login":
-		break
-	case "online_back", "print_back":
+	case "online_back":
 		msg["status"] = "success"
-		break
+	case "print_back":
+		msg["status"] = "success"
+		msg["order_no"] = DocumentID
 	}
 
 	bMsg, _ := json.Marshal(msg)
@@ -270,7 +280,7 @@ func NewConnMsg(typeStr string) []byte {
 	return bMsg
 }
 
-func WebsocketRun(fIn *TForm1, nick string, subNick string) {
+func WebsocketRun(fIn *TForm1, nick string, subNick string) *websocket.Conn {
 
 	f = fIn
 	Nick = nick
@@ -284,6 +294,7 @@ func WebsocketRun(fIn *TForm1, nick string, subNick string) {
 			webSocketListen(NewConnMsg("login")) // 监听 websocket 回调 连接打印服务
 		}
 	}
+	return WebSocketConnect
 }
 
 //func main() {
