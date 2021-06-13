@@ -15,6 +15,12 @@ type TForm1Fields struct {
 }
 
 func (f *TForm1) OnFormCreate(sender vcl.IObject) {
+	//TODO 记住账号
+	IniFile := vcl.NewIniFile("config.ini")
+	f.Nick.SetText(IniFile.ReadString("config", "name", ""))
+	f.SubNick.SetText(IniFile.ReadString("config", "sub_name", ""))
+	IniFile.Free()
+
 	// 关闭窗口的询问事件
 	f.SetOnCloseQuery(func(sender vcl.IObject, canClose *bool) {
 		//f.Hide()
@@ -88,6 +94,13 @@ func (f *TForm1) OnButton1Click(sender vcl.IObject) {
 		vcl.ShowMessage("子账号必填！")
 		return
 	}
+
+	//TODO 记住账号
+	IniFile := vcl.NewIniFile("config.ini")
+	IniFile.WriteString("config", "name", nick)
+	IniFile.WriteString("config", "sub_name", SubNick)
+	IniFile.Free()
+
 	f.Button1.SetEnabled(false)
 	//f.Button2.SetEnabled(true)
 	f.LogBox.Items().Add(time.Now().Format("2006-01-02 15:04:05") + "：提交数据！")
