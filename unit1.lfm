@@ -93,6 +93,28 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 3
     end
+    object EnvStr: TStaticText
+      Left = 1
+      Height = 18
+      Top = 309
+      Width = 214
+      Align = alBottom
+      AutoSize = True
+      Caption = '测试环境'
+      Color = clWhite
+      Enabled = False
+      Font.CharSet = GB2312_CHARSET
+      Font.Color = clYellow
+      Font.Height = -12
+      Font.Name = 'Microsoft YaHei UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      OnClick = EnvStrClick
+      ParentBidiMode = False
+      ParentFont = False
+      ParentColor = False
+      TabOrder = 4
+    end
   end
   object Panel2: TPanel
     Left = 232

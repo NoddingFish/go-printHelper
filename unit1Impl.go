@@ -21,6 +21,9 @@ func (f *TForm1) OnFormCreate(sender vcl.IObject) {
 	f.SubNick.SetText(IniFile.ReadString("config", "sub_name", ""))
 	envStr := IniFile.ReadString("config", "env", "pro")
 	selectUrl(envStr)
+	if envStr != "test" {
+		f.EnvStr.Hide()
+	}
 	IniFile.Free()
 
 	// 关闭窗口的询问事件
@@ -43,7 +46,6 @@ func selectUrl(env string) {
 	switch env {
 	case "test":
 		WebsocketUrl = "wss://test.huijiedan.cn/websocket?type=print"
-		vcl.ShowMessage("当前选择的是测试环境！")
 	default:
 		WebsocketUrl = "wss://order.huijiedan.cn/websocket?type=print"
 	}
@@ -126,4 +128,8 @@ func (f *TForm1) OnButton2Click(sender vcl.IObject) {
 
 func (f *TForm1) OnLogClearClick(sender vcl.IObject) {
 	f.LogBox.Items().Clear() //清空日志
+}
+
+func (f *TForm1) OnEnvStrClick(sender vcl.IObject) {
+
 }

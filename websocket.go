@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/ying32/govcl/vcl"
 	_ "log"
+	"runtime"
 	"time"
 )
 
@@ -38,6 +39,7 @@ type TaskData struct {
 }
 
 var WebsocketUrl string
+var isHeart bool
 
 func CNPrintConnect() *websocket.Conn {
 	//TODO 连接菜鸟打印组件
@@ -131,6 +133,7 @@ func webSocketListen(msg []byte) {
 
 			if err != nil {
 				fmt.Printf("read err:%v \n", err)
+				isHeart = false // 停止心跳
 				f.LogBox.Items().Add(DateStr() + "：断开链接")
 				//TODO 保持 listBox 滚动条显示最新记录
 				f.LogBox.SetTopIndex(f.LogBox.Count() - 1)
@@ -149,6 +152,25 @@ func webSocketListen(msg []byte) {
 			case "login":
 				f.LogBox.Items().Add(DateStr() + "：恭喜你，登录成功！")
 				f.Button2.SetEnabled(true) // 打开断开连接按钮
+				isHeart = true
+
+				//心跳
+				go func() {
+					for {
+						if isHeart == false {
+							fmt.Println("停止发送心跳~")
+							runtime.Goexit()
+						}
+						werr := WebSocketConnect.WriteMessage(websocket.TextMessage, NewConnMsg("heart"))
+
+						if werr != nil {
+							fmt.Println(werr)
+						}
+						fmt.Println("发送心跳~")
+						time.Sleep(time.Second * 20)
+
+					}
+				}()
 			case "online":
 				onlineMsg := NewConnMsg("online_back")
 				werr := WebSocketConnect.WriteMessage(websocket.TextMessage, onlineMsg)
@@ -189,19 +211,6 @@ func webSocketListen(msg []byte) {
 
 			//TODO 保持 listBox 滚动条显示最新记录
 			f.LogBox.SetTopIndex(f.LogBox.Count() - 1)
-		}
-	}()
-
-	//心跳
-	go func() {
-		for {
-			werr := WebSocketConnect.WriteMessage(websocket.TextMessage, NewConnMsg("heart"))
-
-			if werr != nil {
-				fmt.Println(werr)
-			}
-			fmt.Println("发送心跳~")
-			time.Sleep(time.Second * 20)
 		}
 	}()
 

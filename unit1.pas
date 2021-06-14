@@ -18,6 +18,7 @@ type
     LogClear: TButton;
     LogBox: TListBox;
     Nick: TEdit;
+    EnvStr: TStaticText;
     SubNick: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -29,6 +30,7 @@ type
     procedure Label1Click(Sender: TObject);
     procedure logBoxClick(Sender: TObject);
     procedure logClick(Sender: TObject);
+    procedure EnvStrClick(Sender: TObject);
   private
 
   public
@@ -77,6 +79,11 @@ end;
 
 
 procedure TForm1.logClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.EnvStrClick(Sender: TObject);
 begin
 
 end;
