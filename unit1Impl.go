@@ -19,6 +19,8 @@ func (f *TForm1) OnFormCreate(sender vcl.IObject) {
 	IniFile := vcl.NewIniFile("config.ini")
 	f.Nick.SetText(IniFile.ReadString("config", "name", ""))
 	f.SubNick.SetText(IniFile.ReadString("config", "sub_name", ""))
+	envStr := IniFile.ReadString("config", "env", "pro")
+	selectUrl(envStr)
 	IniFile.Free()
 
 	// 关闭窗口的询问事件
@@ -34,6 +36,17 @@ func (f *TForm1) OnFormCreate(sender vcl.IObject) {
 			*canClose = false
 		}
 	})
+}
+
+// 选择环境
+func selectUrl(env string) {
+	switch env {
+	case "test":
+		WebsocketUrl = "wss://test.huijiedan.cn/websocket?type=print"
+		vcl.ShowMessage("当前选择的是测试环境！")
+	default:
+		WebsocketUrl = "wss://order.huijiedan.cn/websocket?type=print"
+	}
 }
 
 func SetTrayIcon(f *TForm1) {

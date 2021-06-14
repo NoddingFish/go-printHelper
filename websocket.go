@@ -37,6 +37,8 @@ type TaskData struct {
 	Documents   [1]interface{} `json:"documents"`
 }
 
+var WebsocketUrl string
+
 func CNPrintConnect() *websocket.Conn {
 	//TODO 连接菜鸟打印组件
 	var dialer *websocket.Dialer
@@ -55,7 +57,7 @@ func CNPrintConnect() *websocket.Conn {
 func webSocketConnect() *websocket.Conn {
 	var dialer *websocket.Dialer
 
-	conn, _, err := dialer.Dial("wss://test.huijiedan.cn/websocket?type=print", nil)
+	conn, _, err := dialer.Dial(WebsocketUrl, nil)
 
 	if err != nil {
 		vcl.ShowMessage("连接打印服务失败！")
@@ -279,6 +281,10 @@ func NewConnMsg(typeStr string) []byte {
 	fmt.Printf("发送消息:%s \n", bMsg)
 	return bMsg
 }
+
+//func SetWebsocketUrl(Url string)  {
+//	websocketUrl
+//}
 
 func WebsocketRun(fIn *TForm1, nick string, subNick string) *websocket.Conn {
 
