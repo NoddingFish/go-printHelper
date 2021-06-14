@@ -51,6 +51,7 @@ func selectUrl(env string) {
 	}
 }
 
+//设置系统托盘
 func SetTrayIcon(f *TForm1) {
 
 	trayicon := vcl.NewTrayIcon(f)
