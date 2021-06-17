@@ -32,11 +32,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	vcl.Application.SetScaled(true)
-	vcl.Application.SetTitle("打印助手")
+    vcl.Application.SetScaled(true)
+    vcl.Application.SetTitle("打印助手")
 	vcl.Application.Initialize()
 	vcl.Application.SetMainFormOnTaskBar(true)
-	vcl.Application.CreateForm(&Form1)
+    vcl.Application.CreateForm(&Form1)
 
 	SetTrayIcon(Form1)
 

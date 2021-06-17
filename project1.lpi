@@ -24,7 +24,7 @@
       <BuildNr Value="1"/>
       <Language Value="0804"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="个人开发" CompanyName="徐然" FileDescription="用于连接菜鸟打印组件提交打印任务的助手工具。" LegalCopyright="徐然（个人开发者） 版权所有" OriginalFilename="打印助手（PrintHelper）" ProductName="打印助手（PrintHelper）"/>
+      <StringTable Comments="个人开发" CompanyName="徐然" FileDescription="打印助手" LegalCopyright="徐然（个人开发者） 版权所有" OriginalFilename="打印助手" ProductName="打印助手" ProductVersion="1.0.0.1"/>
     </VersionInfo>
     <Res2go>
       <Enabled Value="True"/>
